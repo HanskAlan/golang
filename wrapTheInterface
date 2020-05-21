@@ -1,0 +1,43 @@
+package main
+
+import (
+	"fmt"
+	"sort"
+)
+
+type Person struct {
+	name string
+	age int
+}
+type wrappedPerson struct {
+	person []Person
+	by func(p,q *Person) bool
+}
+func (wp wrappedPerson)Len()int{
+	return len(wp.person)
+}
+func (wp wrappedPerson)Swap(i,j int){
+	wp.person[i],wp.person[j]=wp.person[j],wp.person[i]
+}
+func (wp wrappedPerson)Less(i,j int)bool{
+	return wp.by(&wp.person[i],&wp.person[j])
+}
+
+func main() {
+
+	people:=[]Person{
+		{"Gandalf",30000},
+		{"Aragorn",87},
+		{"Legolas",2000},
+		{"Gimli",65},
+	}
+	var w sort.Interface=wrappedPerson{people,func(p,q *Person)bool{
+
+		return p.name<q.name
+	}}
+
+	sort.Sort(w)
+	fmt.Println(people)
+
+}
+
